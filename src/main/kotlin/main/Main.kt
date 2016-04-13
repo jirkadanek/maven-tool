@@ -16,11 +16,7 @@ fun doPrintLExampleLeaves(pom: POM) {
 
 fun doPrintJenkinsExampleJobs(pom: POM) {
     for (leaf in pom.leafArtifactIds("examples")) {
-        print("""
-      - upstream-artemis-examples:
-          suffix: $leaf
-          options: -Pexamples -pl :$leaf
-        """)
+        println("""            - $leaf""")
     }
 }
 
@@ -48,7 +44,6 @@ fun verifyExample(path: String, name: String, outputDir: String) {
     succeeded = succeeded && process.waitFor() == 0
     val group = if (succeeded) "succeeded" else "failed"
 
-    // TODO(jdanek): check with ps that artemis (child process?) dies as well
     if (process.isAlive) {
         process.destroyForcibly()
         process.waitFor()
