@@ -20,6 +20,10 @@ fun doPrintJenkinsExampleJobs(pom: POM) {
     }
 }
 
+fun doPrintTeamCityExampleJobs(pom: POM) {
+    print(pom.leafArtifactIds("examples").joinToString(separator = ","))
+}
+
 fun doVerifyExampleLeaves(path: String, output: String, skip: List<String>) {
     val profile = "examples"
 
@@ -30,13 +34,18 @@ fun doVerifyExampleLeaves(path: String, output: String, skip: List<String>) {
     }
 }
 
+private fun killallArtemis() {
+    val builder = ProcessBuilder(listOf("pkill", "-SIGKILL", "-f", "org.apache.activemq.artemis.boot.Artemis"))
+    builder.start().waitFor()
+}
+
 fun verifyExample(path: String, name: String, outputDir: String) {
     val profile = "examples"
 
     val outputFile = File.createTempFile("output", null)
     val builder = ProcessBuilder()
     builder.directory(File(path))
-    builder.command("mvn", "-P$profile", "-pl", ":$name", "clean", "verify")
+    builder.command(listOf("mvn", "-P$profile", "-pl", ":$name", "verify"))
     builder.redirectOutput(outputFile)
     val process = builder.start()
 
@@ -45,14 +54,21 @@ fun verifyExample(path: String, name: String, outputDir: String) {
     val group = if (succeeded) "succeeded" else "failed"
 
     if (process.isAlive) {
-        process.destroyForcibly()
-        process.waitFor()
+        process.destroyForcibly().waitFor()
     }
+    killallArtemis()
 
     val dir = Paths.get(outputDir).resolve("$group")
     Files.createDirectories(dir)
     Files.move(outputFile.toPath(), Paths.get(outputDir).resolve("$group/$name.stdout"), StandardCopyOption.REPLACE_EXISTING)
 }
+
+//fun <T> permutationsOf(list: List<T>, n Int): List<T> = when (n) {
+//    0 -> emptyList()
+//    else -> {
+//        permutationsOf(, n - 1) + list.
+//    }
+//}
 
 fun main(args: Array<String>) {
     val projectDirectory: String
@@ -69,10 +85,14 @@ fun main(args: Array<String>) {
     val path = Paths.get(projectDirectory).resolve("pom.xml").toString()
     val pom = POM(path)
 
-    when ("jenkins") {
+    when ("run") {
         "print" -> doPrintLExampleLeaves(pom)
         "jenkins" -> doPrintJenkinsExampleJobs(pom)
-        "run" -> doVerifyExampleLeaves(projectDirectory, outputDirectory, listOf("large-message"))
+        "teamcity" -> doPrintTeamCityExampleJobs(pom)
+        "run" -> doVerifyExampleLeaves(projectDirectory, outputDirectory, skip = listOf(
+                //                "client-side-fileoverlistener", // timeouts and does not clean up
+                "large-message" // runs too long
+        ))
         else -> throw RuntimeException("Selected mode does not exist.")
     }
 }
