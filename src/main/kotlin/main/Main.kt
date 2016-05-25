@@ -41,6 +41,7 @@ private fun killallArtemis() {
 
 fun verifyExample(path: String, name: String, outputDir: String) {
     val profile = "examples"
+    val timeoutInSeconds = 10L * 60;
 
     val outputFile = File.createTempFile("output", null)
     val builder = ProcessBuilder()
@@ -49,7 +50,7 @@ fun verifyExample(path: String, name: String, outputDir: String) {
     builder.redirectOutput(outputFile)
     val process = builder.start()
 
-    var succeeded = process.waitFor(120, TimeUnit.SECONDS)
+    var succeeded = process.waitFor(timeoutInSeconds, TimeUnit.SECONDS)
     succeeded = succeeded && process.waitFor() == 0
     val group = if (succeeded) "succeeded" else "failed"
 
