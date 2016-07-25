@@ -27,7 +27,7 @@ First, download A-MQ and Maven repo. Create `~/.m2/settings.xml` for Maven, see 
     unzip jboss-amq7-7.0.0.ER6-maven-repository.zip
     vim ~/.m2/settings.xml
 
-Do `mvn -Pexamples dependency:resolve` in A-MQ examples directory, or possibly even `compile`, because the first command does not download everything. That other command does not download everything either, but it's enough. This is necessary because maven-tool would timeout long running examples and fetching dependencies and compiling for the first time takes long.
+Do `mvn -Pexamples dependency:resolve` in A-MQ examples directory, or possibly even `compile` or `package`, because the first command does not download everything. That other command does not download everything either, but it's enough. This is necessary because maven-tool would timeout long running examples and fetching dependencies and compiling for the first time takes long.
 
     mvn package
     java -cp <path/to/.jar> main.MainKt <path/to/activemq-artemis/examples> </path/to/output/dir>
