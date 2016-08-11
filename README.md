@@ -6,7 +6,7 @@ JVM program to query maven projects and to selectively build some submodules. Ma
 
 Artemis examples can be built independently, but running a reactor with `-Pexamples` fails. Running with `--fail-at-end` tends to fail spectacularly (servers are not being stopped).
 
-I need to be able to run each example individually, then try all pairs, or a random sample of all pairs. This should provide interpretable results to fill effective bug reports.
+I need to be able to run each example individually and collect logs from failed runs. This should provide interpretable results to fill effective bug reports.
 
 ### Implemented Features
 
@@ -30,7 +30,7 @@ First, download A-MQ and Maven repo. Create `~/.m2/settings.xml` for Maven, see 
 Do `mvn -Pexamples dependency:resolve` in A-MQ examples directory, or possibly even `compile` or `package`, because the first command does not download everything. That other command does not download everything either, but it's enough. This is necessary because maven-tool would timeout long running examples and fetching dependencies and compiling for the first time takes long.
 
     mvn package
-    java -cp <path/to/.jar> main.MainKt <path/to/activemq-artemis/examples> </path/to/output/dir>
+    java -cp <path/to/.jar> main.MainKt run <path/to/activemq-artemis/examples> </path/to/output/dir>
 
 ## Dependencies
 

@@ -41,7 +41,8 @@ private fun killallArtemis() {
 
 fun verifyExample(path: String, name: String, outputDir: String) {
     val profile = "examples"
-    val timeoutInSeconds = 10L * 60;
+    val minute = 60
+    val timeoutInSeconds = 20L * minute
 
     val outputFile = File.createTempFile("output", null)
     val builder = ProcessBuilder()
@@ -64,36 +65,43 @@ fun verifyExample(path: String, name: String, outputDir: String) {
     Files.move(outputFile.toPath(), Paths.get(outputDir).resolve("$group/$name.stdout"), StandardCopyOption.REPLACE_EXISTING)
 }
 
-//fun <T> permutationsOf(list: List<T>, n Int): List<T> = when (n) {
-//    0 -> emptyList()
-//    else -> {
-//        permutationsOf(, n - 1) + list.
-//    }
-//}
-
 fun main(args: Array<String>) {
+    val subcommand: String
     val projectDirectory: String
-    val outputDirectory: String
 
     try {
-        projectDirectory = args[0]
-        outputDirectory = args[1]
+        subcommand = args[0]
+        projectDirectory = args[1]
     } catch (e: IndexOutOfBoundsException) {
-        println("Usage: <projectDirectory> <outputDirectory>")
+        println("Usage: <subcommand> <projectDirectory> [...]")
         return
     }
 
     val path = Paths.get(projectDirectory).resolve("pom.xml").toString()
     val pom = POM(path)
 
-    when ("run") {
-        "print" -> doPrintLExampleLeaves(pom)
-        "jenkins" -> doPrintJenkinsExampleJobs(pom)
-        "teamcity" -> doPrintTeamCityExampleJobs(pom)
-        "run" -> doVerifyExampleLeaves(projectDirectory, outputDirectory, skip = listOf(
-                //                "client-side-fileoverlistener", // timeouts and does not clean up
-                "large-message" // runs too long
-        ))
-        else -> throw RuntimeException("Selected mode does not exist.")
+    val subcommands = hashMapOf(
+            Pair("print", { doPrintLExampleLeaves(pom) }),
+            Pair("jenkins", { doPrintJenkinsExampleJobs(pom) }),
+            Pair("teamcity", { doPrintTeamCityExampleJobs(pom) }),
+            Pair("run", fun() {
+                val outputDirectory: String
+                try {
+                    outputDirectory = args[2]
+                } catch (e: IndexOutOfBoundsException) {
+                    println("Usage: run <projectDirectory> <outputDirectory>")
+                    return
+                }
+                doVerifyExampleLeaves(projectDirectory, outputDirectory, skip = listOf(
+                        "large-message" // runs too long
+                ))
+            })
+    )
+
+    if (!subcommands.containsKey(subcommand)) {
+        println("Subcommands: ${subcommands.keys.joinToString()}")
+        throw RuntimeException("Selected command '$subcommand' does not exist.")
+    } else {
+        subcommands[subcommand]?.invoke()
     }
 }
