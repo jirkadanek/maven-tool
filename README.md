@@ -15,7 +15,7 @@ I need to be able to run each example individually and collect logs from failed 
 
 ## Configuration
 
-Rewrite a string at the end of Main.kt. TODO: make it into a command line option.
+First command line option is a subcommand. Use it to specify what you want done.
 
 ## Building and Running
 

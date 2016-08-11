@@ -47,7 +47,7 @@ fun verifyExample(path: String, name: String, outputDir: String) {
     val outputFile = File.createTempFile("output", null)
     val builder = ProcessBuilder()
     builder.directory(File(path))
-    builder.command(listOf("mvn", "-P$profile", "-pl", ":$name", "verify"))
+    builder.command(listOf("mvn", "-debug", "-P$profile", "-pl", ":$name", "verify"))
     builder.redirectOutput(outputFile)
     val process = builder.start()
 
