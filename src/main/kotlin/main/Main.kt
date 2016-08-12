@@ -2,6 +2,7 @@ package main
 
 import maven.POM
 import java.io.File
+import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
@@ -35,8 +36,17 @@ fun doVerifyExampleLeaves(path: String, output: String, skip: List<String>) {
 }
 
 private fun killallArtemis() {
-    val builder = ProcessBuilder(listOf("pkill", "-SIGKILL", "-f", "org.apache.activemq.artemis.boot.Artemis"))
-    builder.start().waitFor()
+    val pkill = ProcessBuilder(listOf("pkill", "-SIGKILL", "-f", "org.apache.activemq.artemis.boot.Artemis"))
+    val killall = ProcessBuilder(listOf("killall", "-SIGKILL"))  // this gets used only on AIX
+    for (command in listOf(pkill, killall)) {
+        try {
+            command.start().waitFor()
+            return
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+    throw RuntimeException("All process killing methods have failed")
 }
 
 fun verifyExample(path: String, name: String, outputDir: String) {
