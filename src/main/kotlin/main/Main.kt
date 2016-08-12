@@ -59,6 +59,7 @@ fun verifyExample(path: String, name: String, outputDir: String) {
     builder.directory(File(path))
     builder.command(listOf("mvn", "-debug", "-P$profile", "-pl", ":$name", "verify"))
     builder.redirectOutput(outputFile)
+    builder.redirectError(outputFile)
     val process = builder.start()
 
     var succeeded = process.waitFor(timeoutInSeconds, TimeUnit.SECONDS)
@@ -72,7 +73,7 @@ fun verifyExample(path: String, name: String, outputDir: String) {
 
     val dir = Paths.get(outputDir).resolve("$group")
     Files.createDirectories(dir)
-    Files.move(outputFile.toPath(), Paths.get(outputDir).resolve("$group/$name.stdout"), StandardCopyOption.REPLACE_EXISTING)
+    Files.move(outputFile.toPath(), Paths.get(outputDir).resolve("$group/$name.output"), StandardCopyOption.REPLACE_EXISTING)
 }
 
 fun main(args: Array<String>) {
