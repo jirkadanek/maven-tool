@@ -31,6 +31,12 @@ Do `mvn -Pexamples dependency:resolve` in A-MQ examples directory, or possibly e
 
     mvn package
     java -cp <path/to/.jar> main.MainKt run <path/to/activemq-artemis/examples> </path/to/output/dir>
+ 
+On AIX, it will repeatedly print
+
+    java.io.IOException: Cannot run program "pkill": error=2, A file or directory in the path name does not exist.
+    
+which is perfectly OK, after trying "pkill" it then silently switches to "killall". TODO: stop printing the stacktrace after I've ran this a few times.
 
 ## Dependencies
 
