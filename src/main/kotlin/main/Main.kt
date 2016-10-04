@@ -2,6 +2,7 @@ package main
 
 import maven.POM
 import java.io.File
+import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
@@ -35,8 +36,17 @@ fun doVerifyExampleLeaves(path: String, output: String, skip: List<String>) {
 }
 
 private fun killallArtemis() {
-    val builder = ProcessBuilder(listOf("pkill", "-SIGKILL", "-f", "org.apache.activemq.artemis.boot.Artemis"))
-    builder.start().waitFor()
+    val pkill = ProcessBuilder(listOf("pkill", "-SIGKILL", "-f", "org.apache.activemq.artemis.boot.Artemis"))
+    val killall = ProcessBuilder(listOf("killall", "-SIGKILL"))  // this gets used only on AIX
+    for (command in listOf(pkill, killall)) {
+        try {
+            command.start().waitFor()
+            return
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+    throw RuntimeException("All process killing methods have failed")
 }
 
 fun verifyExample(path: String, name: String, outputDir: String) {
@@ -49,6 +59,7 @@ fun verifyExample(path: String, name: String, outputDir: String) {
     builder.directory(File(path))
     builder.command(listOf("mvn", "-debug", "-P$profile", "-pl", ":$name", "verify"))
     builder.redirectOutput(outputFile)
+    builder.redirectError(outputFile)
     val process = builder.start()
 
     var succeeded = process.waitFor(timeoutInSeconds, TimeUnit.SECONDS)
@@ -62,7 +73,7 @@ fun verifyExample(path: String, name: String, outputDir: String) {
 
     val dir = Paths.get(outputDir).resolve("$group")
     Files.createDirectories(dir)
-    Files.move(outputFile.toPath(), Paths.get(outputDir).resolve("$group/$name.stdout"), StandardCopyOption.REPLACE_EXISTING)
+    Files.move(outputFile.toPath(), Paths.get(outputDir).resolve("$group/$name.output"), StandardCopyOption.REPLACE_EXISTING)
 }
 
 fun main(args: Array<String>) {

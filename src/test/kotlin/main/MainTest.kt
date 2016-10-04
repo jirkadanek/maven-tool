@@ -11,7 +11,7 @@ class MainTest {
         try {
             tmpdir = Files.createTempDirectory(null)
             main.verifyExample(module1, "thisModuleNotExists", tmpdir.toString())
-            assert(Files.exists(tmpdir.resolve("failed/thisModuleNotExists.stdout")))
+            assert(Files.exists(tmpdir.resolve("failed/thisModuleNotExists.output")))
         } finally {
             Runtime.getRuntime().exec("rm -r '${tmpdir.toString()}'")
         }
