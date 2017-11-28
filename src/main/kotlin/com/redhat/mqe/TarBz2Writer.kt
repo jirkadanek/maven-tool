@@ -9,6 +9,10 @@ class TarBz2Writer(val path: Path) {
     val bz2Output = BZip2CompressorOutputStream(fileOutput)
     val tarOutput = TarArchiveOutputStream(bz2Output)
 
+    init {
+        tarOutput.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX)
+    }
+
     fun putFile(inputPath: Path, entryName: String) {
         val inputFile = inputPath.toFile()
         val entry = tarOutput.createArchiveEntry(inputFile, entryName)
