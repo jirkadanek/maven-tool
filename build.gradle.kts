@@ -34,14 +34,19 @@ dependencies {
     compile(kotlin("stdlib-jre8"))
 
     testCompile(kotlin("test"))
-    testCompile("junit:junit:4.12")
     testCompile("com.google.truth:truth:0.36")
     val junitPlatformVersion = "1.0.1"
     val junitJupiterVersion = "5.0.1"
+    val junit4Version = "4.12"
+    val junitVintageVersion = "4.12.2"
     val log4jVersion = "2.9.1"
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+
+    // If you also want to support JUnit 3 and JUnit 4 tests
+    testCompile("junit:junit:$junit4Version")
+    testRuntime("org.junit.vintage:junit-vintage-engine:$junitVintageVersion")
 
     // To use Log4J"s LogManager
     testRuntimeOnly("org.apache.logging.log4j:log4j-core:$log4jVersion")
