@@ -6,7 +6,7 @@ import java.nio.file.Paths
 
 data class TestResult(val file: File, val suite: String)
 
-val re = Regex(".*/(?<suite>[a-zAz-]*)/target/surefire-reports/(?<file>TEST-[a-zA-Z.]*\\.xml)", RegexOption.COMMENTS)
+val re = Regex(".*/(?<suite>[^/]*)/target/surefire-reports/(?<file>TEST-[^/]*\\.xml)", RegexOption.COMMENTS)
 
 fun testResults(rootDirectory: Path): Sequence<TestResult> = rootDirectory.toFile().walkTopDown()
         .filter { it.isFile }
