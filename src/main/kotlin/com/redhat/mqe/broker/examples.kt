@@ -1,6 +1,6 @@
-package main
+package com.redhat.mqe.broker
 
-import maven.POM
+import com.redhat.mqe.maven.POM
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files

@@ -1,4 +1,4 @@
-package maven
+package com.redhat.mqe.maven
 
 import org.w3c.dom.Document
 import org.w3c.dom.Node
@@ -50,7 +50,7 @@ class POM(val path: String) {
      */
     fun leafArtifactIds(profile: String? = null): List<String> {
         val poms = modulePOMs(profile)
-        return if (poms.size == 0) {
+        return if (poms.isEmpty()) {
             listOf(artifactId())
         } else {
             poms.flatMap { it.leafArtifactIds(profile) }.sorted()
@@ -60,10 +60,8 @@ class POM(val path: String) {
 
 fun <R> NodeList.map(transform: (Node) -> R): List<R> {
     val list = ArrayList<R>(length)
-    for (i in 0..length - 1) {
+    for (i in 0 until length) {
         list.add(transform(item(i)))
     }
     return list
 }
-
-

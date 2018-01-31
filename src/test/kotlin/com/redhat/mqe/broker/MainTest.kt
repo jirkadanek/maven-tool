@@ -1,4 +1,4 @@
-package main
+package com.redhat.mqe.broker
 
 import org.junit.Test
 import java.nio.file.Files
@@ -10,7 +10,7 @@ class MainTest {
         var tmpdir: Path? = null
         try {
             tmpdir = Files.createTempDirectory(null)
-            main.verifyExample(module1, "thisModuleNotExists", tmpdir.toString())
+            verifyExample(module1, "thisModuleNotExists", tmpdir.toString())
             assert(Files.exists(tmpdir.resolve("failed/thisModuleNotExists.output")))
         } finally {
             Runtime.getRuntime().exec("rm -r '${tmpdir.toString()}'")

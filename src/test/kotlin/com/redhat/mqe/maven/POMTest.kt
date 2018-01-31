@@ -1,6 +1,6 @@
-package pom
+package com.redhat.mqe.maven
 
-import maven.POM
+import com.redhat.mqe.maven.POM
 import org.junit.Test
 import kotlin.test.assertEquals
 

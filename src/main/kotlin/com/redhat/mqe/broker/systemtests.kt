@@ -1,4 +1,4 @@
-package com.redhat.mqe
+package com.redhat.mqe.broker
 
 import java.io.IOException
 import java.nio.file.Path
@@ -83,7 +83,7 @@ class TestRunCommands : Commander {
             cd(testDependency) {
                 exec("mvn -U -s ../settings.xml test-compile")
                 exec("mvn -U -s ../settings.xml jar:test-jar")
-                exec("mvn -U -s ../settings.xml install:install-file -Dfile=target/$testDependency-$version-$classifier.jar -DpomFile=pom.xml -Dclassifier=$classifier")
+                exec("mvn -U -s ../settings.xml install:install-file -Dfile=target/$testDependency-${version}-${classifier}.jar -DpomFile=pom.xml -Dclassifier=${classifier}")
             }
         }
         cd("tests") {
@@ -92,7 +92,7 @@ class TestRunCommands : Commander {
                 cd(testDependency) {
                     exec("mvn -U -s ../../settings.xml test-compile")
                     exec("mvn -U -s ../../settings.xml jar:test-jar")
-                    exec("mvn -U -s ../../settings.xml install:install-file -Dfile=target/$testDependency-$version-$classifier.jar -DpomFile=pom.xml -Dclassifier=$classifier")
+                    exec("mvn -U -s ../../settings.xml install:install-file -Dfile=target/$testDependency-${version}-${classifier}.jar -DpomFile=pom.xml -Dclassifier=${classifier}")
                 }
             }
             exec("mvn -U -s ../settings.xml -Pjacoco -Ptests -Pextra-tests -Popenwire-tests test -Drat.ignoreErrors=true -Djasypt-version=1.9.3.redhat_3 -Dactivemq5.project.version=5.14.0")
