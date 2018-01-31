@@ -48,7 +48,7 @@ dependencies {
     testCompile("junit:junit:$junit4Version")
     testRuntime("org.junit.vintage:junit-vintage-engine:$junitVintageVersion")
 
-    // To use Log4J"s LogManager
+    // To use Log4J's LogManager
     testRuntimeOnly("org.apache.logging.log4j:log4j-core:$log4jVersion")
     testRuntimeOnly("org.apache.logging.log4j:log4j-jul:$log4jVersion")
 }
