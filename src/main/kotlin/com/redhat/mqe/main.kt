@@ -41,9 +41,10 @@ fun runBrokerSystemTests() {
 fun compressJUnit(args: List<String>) {
     val resultsDirectory = Paths.get(args[0])
     val archivePath = Paths.get(args[1])
+    val fileName = archivePath.fileName.toString()
     val archiver = when {
-        archivePath.endsWith(".xip") -> ZipWriter(archivePath)
-        archivePath.endsWith(".tar.bz2") -> TarBz2Writer(archivePath)
+        fileName.endsWith(".zip") -> ZipWriter(archivePath)
+        fileName.endsWith(".tar.bz2") -> TarBz2Writer(archivePath)
         else -> throw IllegalArgumentException("Only .zip and .tar.bz2 archive file extensions are supported")
     }
     compressTestResults(resultsDirectory, archiver)
