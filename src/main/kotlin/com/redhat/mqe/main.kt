@@ -3,6 +3,7 @@ package com.redhat.mqe
 import com.redhat.mqe.archiving.TarBz2Writer
 import com.redhat.mqe.archiving.ZipWriter
 import com.redhat.mqe.archiving.compressTestResults
+import com.redhat.mqe.archiving.compressTestResultsIntoSureFireReports
 import com.redhat.mqe.broker.Executor
 import com.redhat.mqe.broker.Printer
 import com.redhat.mqe.broker.TestRunCommands
@@ -47,6 +48,12 @@ fun compressJUnit(args: List<String>) {
         fileName.endsWith(".tar.bz2") -> TarBz2Writer(archivePath)
         else -> throw IllegalArgumentException("Only .zip and .tar.bz2 archive file extensions are supported")
     }
-    compressTestResults(resultsDirectory, archiver)
+    if (args.size == 2) {
+        compressTestResults(resultsDirectory, archiver)
+    }
+    if (args[2] != "surefire-reports") {
+        throw IllegalArgumentException("Only surefire-reports special output directory name can be used")
+    }
+    compressTestResultsIntoSureFireReports(resultsDirectory, archiver)
     archiver.close()
 }

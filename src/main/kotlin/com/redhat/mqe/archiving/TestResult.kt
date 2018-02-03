@@ -28,3 +28,11 @@ fun compressTestResults(rootDirectory: Path, archiver: ArchiveWriter) {
         archiver.putFile(it.file.toPath(), Paths.get(it.suite, fileName).toString())
     }
 }
+
+fun compressTestResultsIntoSureFireReports(rootDirectory: Path, archiver: ArchiveWriter) {
+    val suite = "surefire-reports"
+    testResults(rootDirectory).forEach {
+        val fileName = it.file.name
+        archiver.putFile(it.file.toPath(), Paths.get(suite, fileName).toString())
+    }
+}
