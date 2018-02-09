@@ -12,7 +12,7 @@ import java.nio.file.Paths
 fun main(args: Array<String>) {
     when (args[0]) {
         "runBrokerSystemTests" -> runBrokerSystemTests()
-        "compressJUnit" -> compressJUnit(args.slice(1..args.size))
+        "compressJUnit" -> compressJUnit(args.slice(1 until args.size))
         else -> throw IllegalArgumentException("Specified operation is not implemented")
     }
 }
