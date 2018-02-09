@@ -12,7 +12,7 @@ import java.nio.file.Paths
 fun main(args: Array<String>) {
     when (args[0]) {
         "runBrokerSystemTests" -> runBrokerSystemTests()
-        "compressJUnit" -> compressJUnit(args.slice(1..args.size))
+        "compressJUnit" -> compressJUnit(args.slice(1 until args.size))
         else -> throw IllegalArgumentException("Specified operation is not implemented")
     }
 }
@@ -48,12 +48,15 @@ fun compressJUnit(args: List<String>) {
         fileName.endsWith(".tar.bz2") -> TarBz2Writer(archivePath)
         else -> throw IllegalArgumentException("Only .zip and .tar.bz2 archive file extensions are supported")
     }
-    if (args.size == 2) {
-        compressTestResults(resultsDirectory, archiver)
+    when (args.size) {
+        2 -> compressTestResults(resultsDirectory, archiver)
+        3 -> {
+            if (args[2] != "surefire-reports") {
+                throw IllegalArgumentException("Only surefire-reports special output directory name can be used")
+            }
+            compressTestResultsIntoSureFireReports(resultsDirectory, archiver)
+        }
+        else -> throw IllegalArgumentException("Wrong number of arguments")
     }
-    if (args[2] != "surefire-reports") {
-        throw IllegalArgumentException("Only surefire-reports special output directory name can be used")
-    }
-    compressTestResultsIntoSureFireReports(resultsDirectory, archiver)
     archiver.close()
 }
